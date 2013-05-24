@@ -7,6 +7,7 @@ class AppDelegate
     @blue_view.backgroundColor = UIColor.blueColor
 
     @window.addSubview(@blue_view)
+    add_labels_to_boxes
 
     @add_button = UIButton.buttonWithType(UIButtonTypeRoundedRect)
     @add_button.setTitle("Add", forState:UIControlStateNormal)
@@ -32,6 +33,27 @@ class AppDelegate
     true
   end
 
+  def add_label_to_box(box)
+    box.subviews.each do |subview|
+      subview.removeFromSuperview
+    end
+
+    index_of_box = @window.subviews.index(box)
+    label = UILabel.alloc.initWithFrame(CGRectZero)
+    label.text = "#{index_of_box}"
+    label.textColor = UIColor.whiteColor
+    label.backgroundColor = UIColor.clearColor
+    label.sizeToFit
+    label.center = [box.frame.size.width / 2, box.frame.size.height / 2]
+    box.addSubview(label)
+  end
+
+  def add_labels_to_boxes
+    self.boxes.each do |box|
+      add_label_to_box(box)
+    end
+  end
+
   def add_tapped
     new_view = UIView.alloc.initWithFrame(CGRect.new([0, 0], [100, 100]))
     new_view.backgroundColor = UIColor.blueColor
@@ -42,13 +64,17 @@ class AppDelegate
       last_view.frame.size
     )
     @window.insertSubview(new_view, atIndex:0)
+    add_labels_to_boxes
+  end
+
+  def boxes
+    @window.subviews.select do |view|
+      not (view.is_a?(UIButton) or view.is_a?(UILabel))
+    end
   end
 
   def remove_tapped
-    other_views = @window.subviews.select do |view|
-      not view.is_a? UIButton
-    end
-
+    other_views = self.boxes
     @last_view = other_views.last
 
     if @last_view && other_views.count > 1
@@ -68,6 +94,7 @@ class AppDelegate
       completion: lambda { |finished|
         @last_view.removeFromSuperview
       })
+      add_labels_to_boxes
     end
   end
 end
