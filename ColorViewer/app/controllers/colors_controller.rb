@@ -11,6 +11,8 @@ class ColorsController < UIViewController
                      self.view.frame.size.height / 2]
     @label.autoresizingMask =
       UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin
+
     self.view.addSubview(@label)
+    self.title = 'Colors'
   end
 end
